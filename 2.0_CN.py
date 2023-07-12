@@ -1,10 +1,11 @@
-import os,re,pysrt
+import os,re,pysrt,time
 from pydub import AudioSegment
 
 def 清理文件名(文件名):
     return re.sub(r'[^\w _-]+', '', 文件名).strip()
 
 def 根据字幕分割音频(字幕文件路径, 输入文件路径, 输出目录):
+    开始时间 = time.time()
     音频 = AudioSegment.from_wav(输入文件路径)
     字幕 = pysrt.open(字幕文件路径)
     os.makedirs(输出目录, exist_ok=True)
@@ -17,6 +18,10 @@ def 根据字幕分割音频(字幕文件路径, 输入文件路径, 输出目�
         输出路径 = os.path.join(输出目录, 输出文件名)
         片段.export(输出路径, format="wav")
 
+    结束时间 = time.time()
+    耗时 = 结束时间 - 开始时间
+    print(f"处理完成,耗时: {耗时}秒")
+    
 字幕文件路径 = "都.srt"
 输入文件路径 = "都.wav"
 输出目录 = "存"
