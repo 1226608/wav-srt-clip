@@ -1,7 +1,5 @@
-import os
+import os,re,pysrt
 from pydub import AudioSegment
-import re
-import pysrt
 def clean_filename(filename):
     return re.sub(r'[^\w _-]+', '', filename).strip()
 def split_audio_by_srt(srt_file_path, input_file_path, output_dir):
