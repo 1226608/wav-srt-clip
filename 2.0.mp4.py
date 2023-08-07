@@ -19,7 +19,7 @@ def split_video_by_srt(srt_file_path, input_file_path, output_dir):
         segment = video.subclip(start_time_sub, end_time_sub)
         output_filename = clean_filename(f'{sub.index}_{sub.text}') + '.mp4'
         output_path = os.path.join(output_dir, output_filename)
-        segment.write_videofile(output_path, codec="libx264")
+        segment.write_videofile(output_path, codec="libx264", audio_codec="aac")
 
     end_time = time.time()
     elapsed_time = end_time - start_time
