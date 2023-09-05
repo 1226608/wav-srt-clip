@@ -1,46 +1,46 @@
-导入系统
-从PyQt5.QtWidgets导入 *
-从PyQt5.QtGui导入 *
-从PyQt5.QtCore导入 *
-导入操作系统，重新，pysrt，时间
-从pydub导入AudioSegment
+import sys
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import os,re,pysrt,time
+from pydub import AudioSegment
 
-classWindow ( QWidget ) : #定义了一个名为“Window”的类，它继承自“QWidget ”
+class 窗口(QWidget):#定义了一个名为"窗口"的类，它继承自"QWidget"
 
-    def  __init__ ( self ) : #__init__方法是类的构造函数，当创建“窗口”对象时会被调用
-        超级（）。__初始化__ ( )
+    def __init__(self):#__init__方法是类的构造函数，当创建"窗口"对象时会被调用
+        super().__init__()
         #窗口属性
-        自己。setFixedSize ( QSize ( 400 , 300 ) ) #窗口的大小
-        自己。setAttribute ( Qt.WA_TranslucentBackground ) #窗口背景设为透明
-        自己。setWindowFlags ( Qt.FramelessWindowHint ) #窗口设为无亲密
+        self.setFixedSize(QSize(400, 300))#窗口的大小
+        self.setAttribute(Qt.WA_TranslucentBackground)#窗口背景设为透明
+        self.setWindowFlags(Qt.FramelessWindowHint)#窗口设为无边框
         #按钮外观
-        皮肤= '背景颜色：rgb（192,192,192）;边框半径：10px;边框：4px凹槽灰色;边框样式：开始;'
-        font = QFont ( "黑体" , 12 )
+        skin = 'background-color:rgb(192,192,192);border-radius:10px;border:4px groove gray;border-style:outset;'
+        font = QFont("黑体", 12)
 
-        自己。label = QLabel ( "按照SRT分割WAV" ,self )
-        自己。标签。设置缩进( 150 )
-        自己。标签。setFont ( QFont ( '微软雅黑' , 12 ) )   # 设置标签字体
-   
-        自己。import_wav_button = QPushButton ( "选择导入WAV文件" , self )
-        自己。导入wav_按钮。点击。连接（ self.import_wav_file_path_button ）_
-        自己。导入wav_按钮。setGeometry ( 30 , 50 , 160 , 40 ) #设置按钮位置和大小
-        自己。导入wav_按钮。设置样式表（皮肤）
-        自己。导入wav_按钮。设置字体（字体）
+        self.label = QLabel("按照SRT分割WAV",self)
+        self.label.setIndent(150)
+        self.label.setFont(QFont('微软雅黑', 12))  # 设置标签字体
 
-        自己。import_srt_button = QPushButton ( "选择导入SRT文件" , self )
-        自己。导入_srt_按钮。点击。连接（ self.import_srt_file_path_button ）_
-        自己。导入_srt_按钮。setGeometry ( 30 , 130 , 160 , 40 ) #设置按钮位置和大小
-        自己。导入_srt_按钮。设置样式表（皮肤）
-        自己。导入_srt_按钮。设置字体（字体）
+        self.import_wav_button = QPushButton("选择导入WAV文件", self)
+        self.import_wav_button.clicked.connect(self.import_wav_file_path_button)
+        self.import_wav_button.setGeometry(30, 50, 160, 40)#设置按钮位置和大小
+        self.import_wav_button.setStyleSheet(skin)
+        self.import_wav_button.setFont(font)
 
-        自己。export_button = QPushButton ( '选择导出文件夹' , self )
-        自己。导出按钮。点击。连接（ self.export_folder_path_button ）_
-        自己。导出按钮。setGeometry ( 210 , 90 , 160 , 40 ) #设置按钮位置和大小
-        自己。导出按钮。设置样式表（皮肤）
-        自己。导出按钮。设置字体（字体）
+        self.import_srt_button = QPushButton("选择导入SRT文件", self)
+        self.import_srt_button.clicked.connect(self.import_srt_file_path_button)
+        self.import_srt_button.setGeometry(30, 130, 160, 40)#设置按钮位置和大小
+        self.import_srt_button.setStyleSheet(skin)
+        self.import_srt_button.setFont(font)
 
-        自己。start_button = QPushButton ( '开始处理' , self )
-        自己。开始按钮。点击。连接（自启动）
+        self.export_button = QPushButton('选择导出文件夹', self)
+        self.export_button.clicked.connect(self.export_folder_path_button)
+        self.export_button.setGeometry(210, 90, 160, 40)#设置按钮位置和大小
+        self.export_button.setStyleSheet(skin)
+        self.export_button.setFont(font)
+
+        self.start_button = QPushButton('开始处理', self)
+        self.start_button.clicked.connect(self.start)
         self.start_button.setGeometry(130, 200, 160, 40)#设置按钮位置和大小
         self.start_button.setStyleSheet(skin)
         self.start_button.setFont(font)
@@ -56,12 +56,12 @@ classWindow ( QWidget ) : #定义了一个名为“Window”的类，它继承�
         file_filter = "WAV Files (*.wav)"
         # 弹出文件选择对话框
         global import_wav_file_path
-        import_wav_file_path, _ = QFileDialog. getOpenFileName ( self, '选择WAV文件' , '' , file_filter )
+        import_wav_file_path, _ = QFileDialog.getOpenFileName(self, '选择WAV文件', '', file_filter)
         # 如果选择了文件，将文件路径打印出来
-        如果导入wav文件路径：
-            print ( '选择了WAV文件的路径:' , import_wav_file_path )
+        if import_wav_file_path:
+            print('选择了WAV文件的路径:', import_wav_file_path)
 
-    def  import_srt_file_path_button ( self ) :
+    def import_srt_file_path_button(self):
         # 设置文件过滤器为WAV文件
         file_filter = "SRT Files (*.srt)"
         # 弹出文件选择对话框
@@ -80,7 +80,7 @@ classWindow ( QWidget ) : #定义了一个名为“Window”的类，它继承�
         if export_folder_path:
             print('选择了文件夹的路径:', export_folder_path)
             return export_folder_path
-    
+
     def start(self):
         try:
             if import_wav_file_path and import_srt_file_path and export_folder_path:
