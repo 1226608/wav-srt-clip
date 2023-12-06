@@ -1,0 +1,68 @@
+import bpy
+import csv
+import os
+
+# 获取当前Blender项目文件的文件名
+blender_file_name = bpy.path.basename(bpy.context.blend_data.filepath)
+
+# 获取桌面路径
+desktop_path = os.path.expanduser("~/Desktop")
+
+# 创建一个空字典来保存物体的贴图信息
+texture_info = {}
+
+# 节点名称翻译字典
+node_translation = {
+    "Normal Map": "法线",
+    "Principled BSDF": "基础色",
+    "Roughness": "糙度",
+    "Metallic": "金属度",
+    "Specular": "高光",
+    "Alpha": "透明度",
+    # 添加其他节点名称的翻译
+}
+
+# 遍历场景中的每个物体
+for obj in bpy.data.objects:
+    # 检查物体是否有材质
+    if obj.type == 'MESH' and obj.data.materials:
+        # 获取第一个材质
+        material = obj.data.materials[0]
+
+        # 检查材质节点树是否存在
+        if material.node_tree:
+            # 获取材质节点树
+            tree = material.node_tree
+
+            # 遍历节点树中的所有节点
+            for node in tree.nodes:
+                # 检查节点是否是贴图节点
+                if node.type == 'TEX_IMAGE':
+                    # 获取贴图节点的名称
+                    texture_name = node.image.name
+
+                    # 获取连接到贴图节点的节点名称
+                    node_name = ""
+                    for link in node.outputs[0].links:
+                        if link.to_node:
+                            node_name = link.to_node.name
+
+                    # 翻译节点名称
+                    translated_node_name = node_translation.get(node_name, node_name)
+
+                    # 将物体名称、节点名称和贴图名称添加到贴图信息字典中
+                    if obj.name in texture_info:
+                        texture_info[obj.name].append(f"{translated_node_name} {texture_name}")
+                    else:
+                        texture_info[obj.name] = [f"{translated_node_name} {texture_name}"]
+
+# 将贴图信息写入CSV文件
+csv_file_name = f"{blender_file_name}_的贴图列表.csv"
+csv_file_path = os.path.join(desktop_path, csv_file_name)
+with open(csv_file_path, 'w', newline='', encoding='utf-8-sig') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["对象名", "贴图名"])
+    for obj_name, texture_names in texture_info.items():
+        writer.writerow([obj_name, ", ".join(texture_names)])
+
+print("贴图信息已保存到：", csv_file_path)
