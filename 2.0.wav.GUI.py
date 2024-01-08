@@ -15,33 +15,33 @@ class 窗口(QWidget):#定义了一个名为"窗口"的类，它继承自"QWidge
         self.setWindowFlags(Qt.FramelessWindowHint)#窗口设为无边框
         #按钮外观
         skin = 'background-color:rgb(192,192,192);border-radius:10px;border:4px groove gray;border-style:outset;'
-        font = QFont("黑体", 12)
+        font = QFont("黑体", 11)
 
         self.label = QLabel("按照SRT分割WAV",self)
         self.label.setIndent(150)
-        self.label.setFont(QFont('微软雅黑', 12))  # 设置标签字体
+        self.label.setFont(QFont('微软雅黑', 11))  # 设置标签字体
 
-        self.import_wav_button = QPushButton("选择导入WAV文件", self)
+        self.import_wav_button = QPushButton("第一步:选择导入WAV文件", self)
         self.import_wav_button.clicked.connect(self.import_wav_file_path_button)
-        self.import_wav_button.setGeometry(30, 50, 160, 40)#设置按钮位置和大小
+        self.import_wav_button.setGeometry(100, 40, 190, 40)#设置按钮位置和大小
         self.import_wav_button.setStyleSheet(skin)
         self.import_wav_button.setFont(font)
 
-        self.import_srt_button = QPushButton("选择导入SRT文件", self)
+        self.import_srt_button = QPushButton("第二步:选择导入SRT文件", self)
         self.import_srt_button.clicked.connect(self.import_srt_file_path_button)
-        self.import_srt_button.setGeometry(30, 130, 160, 40)#设置按钮位置和大小
+        self.import_srt_button.setGeometry(100, 90, 190, 40)#设置按钮位置和大小
         self.import_srt_button.setStyleSheet(skin)
         self.import_srt_button.setFont(font)
 
-        self.export_button = QPushButton('选择导出文件夹', self)
+        self.export_button = QPushButton('第三步:选择导出文件夹', self)
         self.export_button.clicked.connect(self.export_folder_path_button)
-        self.export_button.setGeometry(210, 90, 160, 40)#设置按钮位置和大小
+        self.export_button.setGeometry(100, 140, 190, 40)#设置按钮位置和大小
         self.export_button.setStyleSheet(skin)
         self.export_button.setFont(font)
 
         self.start_button = QPushButton('开始处理', self)
         self.start_button.clicked.connect(self.start)
-        self.start_button.setGeometry(130, 200, 160, 40)#设置按钮位置和大小
+        self.start_button.setGeometry(100, 190, 190, 40)#设置按钮位置和大小
         self.start_button.setStyleSheet(skin)
         self.start_button.setFont(font)
 
